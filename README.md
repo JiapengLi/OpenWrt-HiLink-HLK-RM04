@@ -81,6 +81,7 @@ Replace the uboot
 
 1. configure a tftp server. 
 	- For Ubuntu, See more [Install tftp info][Install tftp]
+
 ```bash
 	sudo atp-get install tftpd-hpa 
 	sudo service tftpd-hpa 
@@ -91,6 +92,7 @@ Replace the uboot
 1. Restart your HLK-RM04 module. Push '2' rapidly to enter the tftp write flash mode.
 1. Set device ip `192.168.16.1`, Set server ip `192.168.16.100`.
 1. input the file name `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`
+
 ```
 	2: System Load Linux Kernel then write to Flash via TFTP.
 	 Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
