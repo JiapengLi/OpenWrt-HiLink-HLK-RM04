@@ -1,0 +1,473 @@
+Index: target/linux/ramips/rt305x/profiles/hilink.mk
+===================================================================
+--- target/linux/ramips/rt305x/profiles/hilink.mk	(revision 0)
++++ target/linux/ramips/rt305x/profiles/hilink.mk	(working copy)
+@@ -0,0 +1,21 @@
++#
++# Copyright (C) 2013 OpenWrt.org
++#
++# This is free software, licensed under the GNU General Public License v2.
++# See /LICENSE for more information.
++#
++
++define Profile/HLKRM04
++	NAME:=HILINK HLK-RM04
++	PACKAGES:=\
++		kmod-usb-core kmod-usb-ohci kmod-usb2 kmod-ledtrig-netdev kmod-ledtrig-timer \
++		kmod-usb-acm kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-serial kmod-usb-serial-option \
++		usb-modeswitch usb-modeswitch-data comgt
++endef
++
++define Profile/HLKRM04/Description
++	Package set for HiLink RM04 Module
++endef
++
++$(eval $(call Profile,HLKRM04))
++
+Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
+===================================================================
+--- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37737)
++++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
+@@ -76,6 +76,7 @@
+ 	fonera20n | \
+ 	rt-n13u | \
+ 	freestation5 | \
++	hlk-rm04 | \
+ 	hw550-3g | \
+ 	mofi3500-3gn | \
+ 	mpr-a1 | \
+Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
+===================================================================
+--- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 37737)
++++ target/linux/ramips/base-files/etc/uci-defaults/01_leds	(working copy)
+@@ -87,6 +87,9 @@
+ 		set_usb_led "fonera20n:orange:usb"
+ 		set_wifi_led "fonera20n:orange:wifi"
+ 		;;
++	hlk-rm04)
++		#set_wifi_led "hlk-rm04:blue:system"
++		;;
+ 	all0239-3g|\
+ 	hw550-3g)
+ 		set_usb_led "hw550-3g:green:usb"
+Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
+===================================================================
+--- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37737)
++++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
+@@ -173,6 +173,7 @@
+ 	broadway | \
+ 	dir-620-d1 | \
+ 	f5d8235-v1 | \
++	hlk-rm04 | \
+ 	ip2202 | \
+ 	mpr-a1 | \
+ 	mpr-a2 | \
+Index: target/linux/ramips/base-files/etc/diag.sh
+===================================================================
+--- target/linux/ramips/base-files/etc/diag.sh	(revision 37737)
++++ target/linux/ramips/base-files/etc/diag.sh	(working copy)
+@@ -51,6 +51,9 @@
+ 	rt-n13u)
+ 		status_led="rt-n13u:power"
+ 		;;
++	hlk-rm04)
++		status_led="hlk-rm04:red:power"
++		;;
+ 	all0239-3g|\
+ 	hw550-3g)
+ 		status_led="hw550-3g:green:status"
+Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
+===================================================================
+--- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37737)
++++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
+@@ -44,6 +44,7 @@
+ 	freestation5 | \
+ 	hw550-3g | \
+ 	hg255d | \
++	hlk-rm04 | \
+ 	ip2202 | \
+ 	m3 | \
+ 	m4 | \
+Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
+===================================================================
+--- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37737)
++++ target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(working copy)
+@@ -26,6 +26,7 @@
+ 	dir-620-a1 |\
+ 	esr-9753 |\
+ 	freestation5 |\
++	hlk-rm04 | \
+ 	mpr-a1 | \
+ 	mpr-a2 | \
+ 	nw718 |\
+Index: target/linux/ramips/base-files/lib/ramips.sh
+===================================================================
+--- target/linux/ramips/base-files/lib/ramips.sh	(revision 37737)
++++ target/linux/ramips/base-files/lib/ramips.sh	(working copy)
+@@ -118,6 +118,9 @@
+ 	*"MoFi Network MOFI3500-3GN")
+ 		name="mofi3500-3gn"
+ 		;;
++	*"HILINK HLK-RM04")
++		name="hlk-rm04"
++		;;
+ 	*"HAME MPR-A1")
+  		name="mpr-a1"
+  		;;
+Index: target/linux/ramips/image/Makefile
+===================================================================
+--- target/linux/ramips/image/Makefile	(revision 37737)
++++ target/linux/ramips/image/Makefile	(working copy)
+@@ -376,6 +376,8 @@
+ 
+ Image/Build/Profile/IP2202=$(call BuildFirmware/Default8M/$(1),$(1),ip2202,IP2202)
+ 
++Image/Build/Profile/HLKRM04=$(call BuildFirmware/Default4M/$(1),$(1),hlk-rm04,HLKRM04,Linux Kernel Image)
++
+ Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
+ 
+ Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
+@@ -517,6 +519,7 @@
+ 	$(call Image/Build/Profile/FONERA20N,$(1))
+ 	$(call Image/Build/Profile/FREESTATION5,$(1))
+ #	$(call Image/Build/Profile/HG255D,$(1))
++	$(call Image/Build/Profile/HLKRM04,$(1))
+ 	$(call Image/Build/Profile/HW550-3G,$(1))
+ 	$(call Image/Build/Profile/IP2202,$(1))
+ 	$(call Image/Build/Profile/M3,$(1))
+Index: target/linux/ramips/dts/HLKRM04.dts
+===================================================================
+--- target/linux/ramips/dts/HLKRM04.dts	(revision 0)
++++ target/linux/ramips/dts/HLKRM04.dts	(working copy)
+@@ -0,0 +1,331 @@
++/dts-v1/;
++
++/ {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "HLKRM04", "ralink,rt5350-soc";
++	model = "HILINK HLK-RM04";
++
++	cpus {
++		cpu@0 {
++			compatible = "mips,mips24KEc";
++		};
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,57600";
++	};
++
++	cpuintc: cpuintc@0 {
++		#address-cells = <0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++		compatible = "mti,cpu-interrupt-controller";
++	};
++
++	// comment memory node to auto check the SDRAM
++	memory@0 {
++		reg = <0x0 0x1000000>;
++	};
++
++	palmbus@10000000 {
++		compatible = "palmbus";
++		reg = <0x10000000 0x200000>;
++		ranges = <0x0 0x10000000 0x1FFFFF>;
++
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		sysc@0 {
++			compatible = "ralink,rt5350-sysc", "ralink,rt3050-sysc";
++			reg = <0x0 0x100>;
++
++			ralink,uartmux = "gpio uartf";
++			ralink,pinmux = "i2c", "spi", "uartlite", "mdio", "sdram", "rgmii";
++			ralink,gpiomux = "jtag";
++			ralink,wdtmux = <1>;
++		};
++
++		timer@100 {
++			compatible = "ralink,rt5350-timer", "ralink,rt2880-timer";
++			reg = <0x100 0x20>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <1>;
++		};
++
++		watchdog@120 {
++			compatible = "ralink,rt5350-wdt", "ralink,rt2880-wdt";
++			reg = <0x120 0x10>;
++
++			resets = <&rstctrl 8>;
++			reset-names = "wdt";
++
++			interrupt-parent = <&intc>;
++			interrupts = <1>;
++		};
++
++		intc: intc@200 {
++			compatible = "ralink,rt5350-intc", "ralink,rt2880-intc";
++			reg = <0x200 0x100>;
++
++			resets = <&rstctrl 19>;
++			reset-names = "intc";
++
++			interrupt-controller;
++			#interrupt-cells = <1>;
++
++			interrupt-parent = <&cpuintc>;
++			interrupts = <2>;
++		};
++
++		memc@300 {
++			compatible = "ralink,rt5350-memc", "ralink,rt3050-memc";
++			reg = <0x300 0x100>;
++
++			resets = <&rstctrl 20>;
++			reset-names = "mc";
++
++			interrupt-parent = <&intc>;
++			interrupts = <3>;
++		};
++
++		uartlite@c00 {
++			compatible = "ralink,rt5350-uart", "ralink,rt2880-uart", "ns16550a";
++			reg = <0xc00 0x100>;
++
++			resets = <&rstctrl 19>;
++			reset-names = "uartl";
++
++			interrupt-parent = <&intc>;
++			interrupts = <12>;
++
++			reg-shift = <2>;
++		};
++
++		uart@500 {
++			compatible = "ralink,rt5350-uart", "ralink,rt2880-uart", "ns16550a";
++			reg = <0x500 0x100>;
++
++			resets = <&rstctrl 12>;
++			reset-names = "uart";
++
++			interrupt-parent = <&intc>;
++			interrupts = <5>;
++
++			reg-shift = <2>;
++
++			status = "okay";
++		};
++
++		gpio0: gpio@600 {
++			compatible = "ralink,rt5350-gpio", "ralink,rt2880-gpio";
++			reg = <0x600 0x34>;
++
++			resets = <&rstctrl 13>;
++			reset-names = "pio";
++
++			interrupt-parent = <&intc>;
++			interrupts = <6>;
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			ralink,gpio-base = <0>;
++			ralink,num-gpios = <24>;
++			ralink,register-map = [ 00 04 08 0c
++						20 24 28 2c
++						30 34 ];
++
++			status = "okay";
++		};
++
++		gpio1: gpio@638 {
++			compatible = "ralink,rt5350-gpio", "ralink,rt2880-gpio";
++			reg = <0x638 0x24>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <6>;
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			ralink,gpio-base = <24>;
++			ralink,num-gpios = <16>;
++			ralink,register-map = [ 00 04 08 0c
++						10 14 18 1c
++						20 24 ];
++
++			status = "disabled";
++		};
++
++		gpio2: gpio@660 {
++			compatible = "ralink,rt5350-gpio", "ralink,rt2880-gpio";
++			reg = <0x660 0x24>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <6>;
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			ralink,gpio-base = <40>;
++			ralink,num-gpios = <12>;
++			ralink,register-map = [ 00 04 08 0c
++						10 14 18 1c
++						20 24 ];
++
++			status = "disabled";
++		};
++
++		i2c@900 {
++			compatible = "link,rt5350-i2c", "ralink,rt2880-i2c";
++			reg = <0x900 0x100>;
++
++			resets = <&rstctrl 16>;
++			reset-names = "i2c";
++
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			status = "disabled";
++		};
++
++		spi@b00 {
++			compatible = "ralink,rt5350-spi", "ralink,rt2880-spi";
++			reg = <0xb00 0x100>;
++
++			resets = <&rstctrl 18>;
++			reset-names = "spi";
++
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			status = "okay";
++			m25p80@0 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++				compatible = "s25fl064k";
++				reg = <0 0>;
++				linux,modalias = "m25p80", "s25fl064k";
++				spi-max-frequency = <10000000>;
++
++				partition@0 {
++					label = "u-boot";
++					reg = <0x0 0x30000>;
++					read-only;
++				};
++
++				partition@30000 {
++					label = "u-boot-env";
++					reg = <0x30000 0x10000>;
++					read-only;
++				};
++
++				factory: partition@40000 {
++					label = "factory";
++					reg = <0x40000 0x10000>;
++					read-only;
++				};
++
++				partition@50000 {
++					label = "firmware";
++					reg = <0x50000 0x3b0000>;
++				};
++			};
++		};
++
++		systick@d00 {
++			compatible = "ralink,rt5350-systick", "ralink,cevt-systick";
++			reg = <0xd00 0x10>;
++
++			interrupt-parent = <&cpuintc>;
++			interrupts = <7>;
++		};
++	};
++
++	rstctrl: rstctrl {
++		compatible = "ralink,rt5350-reset", "ralink,rt2880-reset";
++		#reset-cells = <1>;
++	};
++
++	ubsphy {
++		compatible = "ralink,rt3xxx-usbphy";
++
++		resets = <&rstctrl 22 &rstctrl 25>;
++		reset-names = "host", "device";
++	};
++
++	ethernet@10100000 {
++		compatible = "ralink,rt5350-eth";
++		reg = <0x10100000 10000>;
++
++		interrupt-parent = <&cpuintc>;
++		interrupts = <5>;
++
++		status = "okay";
++	};
++
++	esw@10110000 {
++		compatible = "ralink,rt3050-esw";
++		reg = <0x10110000 8000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <17>;
++
++		status = "okay";
++	};
++
++	wmac@10180000 {
++		compatible = "ralink,rt5350-wmac", "ralink,rt2880-wmac";
++		reg = <0x10180000 40000>;
++
++		interrupt-parent = <&cpuintc>;
++		interrupts = <6>;
++
++		ralink,eeprom = "soc_wmac.eeprom";
++
++		status = "okay";
++	};
++
++	ehci@101c0000 {
++		compatible = "ralink,rt3xxx-ehci", "ehci-platform";
++		reg = <0x101c0000 0x1000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <18>;
++
++		status = "okay";
++	};
++
++	ohci@101c1000 {
++		compatible = "ralink,rt3xxx-ohci", "ohci-platform";
++		reg = <0x101c1000 0x1000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <18>;
++
++		status = "okay";
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <20>;
++		wps {
++			label = "reset";
++			gpios = <&gpio0 14 1>;
++			linux,code = <0x198>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++		power {
++			label = "hlk-rm04:red:power";
++			gpios = <&gpio0 0 1>;
++		};
++	};
++
++};
