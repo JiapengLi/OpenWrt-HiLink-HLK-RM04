@@ -93,14 +93,14 @@ Replace the uboot
 1. Set device ip `192.168.16.1`, Set server ip `192.168.16.100`.
 1. input the file name `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`
 
-```
-	2: System Load Linux Kernel then write to Flash via TFTP.
-	 Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
-	 Please Input new ones /or Ctrl-C to discard
-	        Input device IP (10.10.10.123) ==:192.168.16.1
-	        Input server IP (10.10.10.3) ==:192.168.16.100
-	        Input Linux Kernel filename (tim_uImage) ==:openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin
-```
+	```
+		2: System Load Linux Kernel then write to Flash via TFTP.
+		 Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
+		 Please Input new ones /or Ctrl-C to discard
+		        Input device IP (10.10.10.123) ==:192.168.16.1
+		        Input server IP (10.10.10.3) ==:192.168.16.100
+		        Input Linux Kernel filename (tim_uImage) ==:openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin
+	```
 1. Wait flashing finished, then you can use Openwrt on HLK-RM04. 
 
 ## About Patch
