@@ -46,8 +46,9 @@ Target Profile: HILINK HLK-RM04
 
 To use OpenWrt with LuCI Web UI, you can additionally select following options:
 
-LuCI --> Collections --> luci
-LuCI --> Protocols --> luci-proto-3g
+- LuCI --> Collections --> luci
+- LuCI --> Protocols --> luci-proto-3g
+
 After all the needed options are selected, exit the menu, save the configuration, and proceed to build:
 
 	make
@@ -80,23 +81,23 @@ Replace the uboot
 
 1. configure a tftp server. 
 	- For Ubuntu, See more [Install tftp info][Install tftp]
-		sudo atp-get install tftpd-hpa 
-		sudo service tftpd-hpa 
-		cp bin/ramips/openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin /var/lib/tftpboot/
+			sudo atp-get install tftpd-hpa 
+			sudo service tftpd-hpa 
+			cp bin/ramips/openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin /var/lib/tftpboot/
  	- Download Tftpd32.exe, make `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin' to be in the same directory with Tftpd32.exe, choose a right server ip.
 1. open serial use 57600,8,n,1, make sure you have connect the serial cable.
 1. Restart your HLK-RM04 module. Push '2' rapidly to enter the tftp write flash mode.
 1. Set device ip `192.168.16.1`, Set server ip `192.168.16.100`.
 1. input the file name `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`
-	2: System Load Linux Kernel then write to Flash via TFTP.
-	 Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
-	 Please Input new ones /or Ctrl-C to discard
-	        Input device IP (10.10.10.123) ==:192.168.16.1
-	        Input server IP (10.10.10.3) ==:192.168.16.100
-	        Input Linux Kernel filename (tim_uImage) ==:openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin
+		2: System Load Linux Kernel then write to Flash via TFTP.
+		 Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
+		 Please Input new ones /or Ctrl-C to discard
+		        Input device IP (10.10.10.123) ==:192.168.16.1
+		        Input server IP (10.10.10.3) ==:192.168.16.100
+		        Input Linux Kernel filename (tim_uImage) ==:openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin
 1. Wait flashing finished, then you can use Openwrt on HLK-RM04. 
 
-## Patch thing
+## About Patch
 
 ### openwrt-add-support-for-hilink-hlk-rm04.patch
 This patch is based on previous work by Squonk42 (<https://github.com/Squonk42/OpenWrt-RT5350>), shmygov (<https://github.com/shmygov/OpenWrt-HAME-MPR-A2>)  and others from OpenWrt forum (https://forum.openwrt.org/viewtopic.php?id=37002&p=19), adapted for the new "Device Trees" structure based on dts files used in the latest OpenWrt trunk. Because need to change the order of `uart` and `uartlite` node in the rt5350.dtsi file, so that linux kernel register `uartlite` and `uart` in `ttyS0` and `ttyS1` sequence, so didn't use the rt5350.dtsi file just create a new one.  
