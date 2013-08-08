@@ -84,8 +84,7 @@ Replace the uboot
 
 			sudo atp-get install tftpd-hpa 
 			sudo service tftpd-hpa 
-			cp bin/ramips/openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin /var/lib/tftpboot/
-			
+			cp bin/ramips/openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin /var/lib/tftpboot/	
  	- Download Tftpd32.exe, make `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin' to be in the same directory with Tftpd32.exe, choose a right server ip.
 1. open serial use 57600,8,n,1, make sure you have connect the serial cable.
 1. Restart your HLK-RM04 module. Push '2' rapidly to enter the tftp write flash mode.
