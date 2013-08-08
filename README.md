@@ -12,7 +12,7 @@ HLK-RM04 has 4M flash and 16M SDRAM on chip, has 1 USB port, 2 Serial Ports(lite
 - **openwrt-fix-enable-uartf-kernel-panic.patch** -- patch to fix the kernel panic after enable UARTF
 - **uboot128.img** -- uboot for 16M SDRAM, if you don't modify the HLK-RM04, use this uboot image
 - **uboot256.img** -- uboot for 32M SDRAM, some people may want to expand the Uboot, and these men should use this uboot image
-- **hlk-rm04-sys-info** -- some hardware information about HLK-RM04
+- **[hlk-rm04-boot-log.md](./hlk-rm04-boot-log.md)** -- some hardware information and openwrt bootlog of HLK-RM04
 
 ## Patch and Compile Openwrt
 
