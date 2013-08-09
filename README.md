@@ -34,6 +34,11 @@ This is achieved using the following code snippet:
     patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-add-support-for-hilink-hlk-rm04.patch
     patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-fix-enable-uartf-kernel-panic.patch
 
+Also you may want some extra package, (if not, skip then) :
+
+	./scripts/feeds update -a
+	./scripts/feeds install -a
+
 Then, empty the ./tmp and configure your openwrt. Run:
 	rm -rf tmp
 	make menuconfig
