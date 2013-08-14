@@ -10,6 +10,7 @@ HLK-RM04 has 4M flash and 16M SDRAM on chip, has 1 USB port, 2 Serial Ports(lite
                              
 - **openwrt-add-support-for-hilink-hlk-rm04.patch** -- patch to add "HILINK HLK-RM04" to OpenWrt
 - **openwrt-fix-enable-uartf-kernel-panic.patch** -- patch to fix the kernel panic after enable UARTF
+- **openwrt-hlk-rm04-firwmware-tool.patch** -- this patch was writen by Jeff Kent form openwrt forum, this patch make us upload firmware from official webUI upload firmware interface
 - **uboot128.img** -- uboot for 16M SDRAM, if you don't modify the HLK-RM04, use this uboot image
 - **uboot256.img** -- uboot for 32M SDRAM, some people may want to expand the Uboot, and these men should use this uboot image
 - **[hlk-rm04-boot-log.md](./hlk-rm04-boot-log.md)** -- some hardware information and openwrt bootlog of HLK-RM04
@@ -49,6 +50,10 @@ Target System: Ralink RT288x/RT3xxx
 Subtarget: RT305x based boards
 Target Profile: HILINK HLK-RM04
 
+For first time upload the openwrt, you need select 
+*Target Image: ramdisk*  
+By selecting this option, you can get a file named `openwrt-ramips-rt305x-hlk-rm04-initramfs-factory.bin`, use this bin file to upload hlk-rm04 module for first time 
+
 To use OpenWrt with LuCI Web UI, you can additionally select following options:
 
 - LuCI --> Collections --> luci
@@ -60,7 +65,21 @@ After all the needed options are selected, exit the menu, save the configuration
 
 After compiling is done without any error, you'll find the image in `bin/ramips/` which is named `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`. 
 
+
 ## Installtion
+Jeff Kent make the firmware upload much easier. We can upload the openwrt firmware to the hlk-rm04 directly through the upload firmware WEBUI interface.
+### First Time
+Make sure you've gotton the `openwrt-ramips-rt305x-hlk-rm04-initramfs-factory.bin`, be carefull with this, this may brick your hlk-rm04 module, you may need save your hlk-rm04 firmware first.
+
+1. set your PC ipadress to **192.168.16.100**, Gateway **192.168.16.254**, may be difference if you have changed it once.
+1. connect HLK-RM04 LAN port to your PC, power up HLK-RM04
+1. access <http://192.168.16.254/HLK_RM04.asp>, replace `192.168.16.254` with yours, if you've changed it once.
+1. click the `Upload Firmware` on the left side, choose the `openwrt-ramips-rt305x-hlk-rm04-initramfs-factory.bin`, **Apply** and wait, then you got openwrt run on your hlk-rm04 module.
+
+### Sysupgrade
+After install openwrt first time, you can use openwrt sysupgrade command to upgrade hlk-rm04. [See wiki](http://wiki.openwrt.org/doc/howto/generic.sysupgrade)
+
+## Installtion(This method is out of date)
 So far, i don't make WEBUI upgrade firmware work for flash openwrt image. This installtion need two steps:
 
 - replace the HiLink official uboot 
