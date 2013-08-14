@@ -33,6 +33,7 @@ This is achieved using the following code snippet:
     git clone https://github.com/JiapengLi/OpenWrt-HiLink-HLK-RM04.git
     cd trunk
     patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-add-support-for-hilink-hlk-rm04.patch
+    patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-hlk-rm04-firmware-tool.patch
     patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-fix-enable-uartf-kernel-panic.patch
 
 Also you may want some extra package(if not, skip then) :
