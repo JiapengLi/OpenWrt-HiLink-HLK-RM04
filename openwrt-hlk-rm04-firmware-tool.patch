@@ -1,0 +1,163 @@
+Index: tools/firmware-utils/src/mkhilinkfw.c
+===================================================================
+--- tools/firmware-utils/src/mkhilinkfw.c	(revision 0)
++++ tools/firmware-utils/src/mkhilinkfw.c	(working copy)
+@@ -0,0 +1,145 @@
++/*
++ * Builder/viewer/extractor utility for HiLink HLK-RM04 firmware image files
++ *
++ * Copyright (C) 2013 Jeff Kent <jeff@jkent.net>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ *
++ */
++
++#include <errno.h>
++#include <fcntl.h>
++#include <openssl/des.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++
++
++#define DES_KEY "H@L9K*(3"
++#define IH_MAGIC    0x27051956
++#define IH_NMLEN    32
++typedef struct image_header {
++    uint32_t    ih_magic;   /* Image Header Magic Number    */
++    uint32_t    ih_hcrc;    /* Image Header CRC Checksum    */
++    uint32_t    ih_time;    /* Image Creation Timestamp */
++    uint32_t    ih_size;    /* Image Data Size      */
++    uint32_t    ih_load;    /* Data  Load  Address      */
++    uint32_t    ih_ep;      /* Entry Point Address      */
++    uint32_t    ih_dcrc;    /* Image Data CRC Checksum  */
++    uint8_t     ih_os;      /* Operating System     */
++    uint8_t     ih_arch;    /* CPU architecture     */
++    uint8_t     ih_type;    /* Image Type           */
++    uint8_t     ih_comp;    /* Compression Type     */
++    uint8_t     ih_name[IH_NMLEN];  /* Image Name       */
++} image_header_t;
++
++
++static void encrypt(void *p, off_t len);
++static void decrypt(void *p, off_t len);
++
++int main(int argc, char *argv[])
++{
++	struct stat sbuf;
++	image_header_t header;
++	char *imagefile;
++	int fd;
++	void *p;
++
++	if (argc != 2) {
++		fprintf(stderr, "usage: hlkcrypt FILE\n", argv[0]);
++		exit(EXIT_FAILURE);
++	}
++
++	imagefile = argv[1];
++	fd = open(imagefile, O_RDWR);
++	if (!fd) {
++		fprintf(stderr, "Can't open %s: %s\n", imagefile, strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++
++	if (fstat(fd, &sbuf) < 0) {
++		close(fd);
++		fprintf(stderr, "Can't stat %s: %s\n", imagefile, strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++
++	p = mmap(0, sbuf.st_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
++	if (p == MAP_FAILED) {
++		close(fd);
++		fprintf(stderr, "Can't mmap %s: %s\n", imagefile, strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++
++	memcpy(&header, p, sizeof(image_header_t));
++	if (ntohl(header.ih_magic) == IH_MAGIC) {
++		encrypt(p, sbuf.st_size);
++		printf("%s encrypted\n", imagefile);
++	}
++	else {
++		decrypt(&header, sizeof(image_header_t));
++		if (ntohl(header.ih_magic) == IH_MAGIC) {
++			decrypt(p, sbuf.st_size);
++			printf("%s decrypted\n", imagefile);
++		}
++		else {
++			munmap(p, sbuf.st_size);
++			close(fd);
++			fprintf(stderr, "Unrecognized header in %s\n", imagefile);
++			exit(EXIT_FAILURE);
++		}
++	}
++
++	munmap(p, sbuf.st_size);
++	close(fd);
++	exit(EXIT_SUCCESS);
++}
++
++static void encrypt(void *p, off_t len)
++{
++	DES_key_schedule schedule;
++	DES_cblock *pblock;
++	int blocks;
++
++	DES_set_key_unchecked((const_DES_cblock *)DES_KEY, &schedule);
++
++	blocks = len / 8;
++	pblock = (DES_cblock *) p;
++	while (blocks--) {
++		DES_ecb_encrypt(pblock, pblock, &schedule, DES_ENCRYPT);
++		pblock++;
++	}
++
++	blocks = (len - 3) / 8;
++	pblock = (DES_cblock *) (p + 3);
++	while (blocks--) {
++		DES_ecb_encrypt(pblock, pblock, &schedule, DES_ENCRYPT);
++		pblock++;
++	}
++}
++
++static void decrypt(void *p, off_t len)
++{
++	DES_key_schedule schedule;
++	DES_cblock *pblock;
++	int blocks;
++
++	DES_set_key_unchecked((const_DES_cblock *)DES_KEY, &schedule);
++
++	blocks = (len - 3) / 8;
++	pblock = (DES_cblock *) (p + 3);
++	while (blocks--) {
++		DES_ecb_encrypt(pblock, pblock, &schedule, DES_DECRYPT);
++		pblock++;
++	}
++
++	blocks = len / 8;
++	pblock = (DES_cblock *) p;
++	while (blocks--) {
++		DES_ecb_encrypt(pblock, pblock, &schedule, DES_DECRYPT);
++		pblock++;
++	}
++}
+\ No newline at end of file
+Index: tools/firmware-utils/Makefile
+===================================================================
+--- tools/firmware-utils/Makefile	(revision 37768)
++++ tools/firmware-utils/Makefile	(working copy)
+@@ -65,6 +65,7 @@
+ 	$(call cc,fix-u-media-header cyg_crc32,-Wall)
+ 	$(call cc,hcsmakeimage bcmalgo)
+ 	$(call cc,mkporayfw, -Wall)
++	$(call cc,mkhilinkfw, -lcrypto)
+ endef
+ 
+ define Host/Install

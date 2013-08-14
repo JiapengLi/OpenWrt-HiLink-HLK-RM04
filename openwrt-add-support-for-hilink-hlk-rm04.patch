@@ -24,35 +24,9 @@ Index: target/linux/ramips/rt305x/profiles/hilink.mk
 +
 +$(eval $(call Profile,HLKRM04))
 +
-Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
-===================================================================
---- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37737)
-+++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
-@@ -76,6 +76,7 @@
- 	fonera20n | \
- 	rt-n13u | \
- 	freestation5 | \
-+	hlk-rm04 | \
- 	hw550-3g | \
- 	mofi3500-3gn | \
- 	mpr-a1 | \
-Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
-===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 37737)
-+++ target/linux/ramips/base-files/etc/uci-defaults/01_leds	(working copy)
-@@ -87,6 +87,9 @@
- 		set_usb_led "fonera20n:orange:usb"
- 		set_wifi_led "fonera20n:orange:wifi"
- 		;;
-+	hlk-rm04)
-+		#set_wifi_led "hlk-rm04:blue:system"
-+		;;
- 	all0239-3g|\
- 	hw550-3g)
- 		set_usb_led "hw550-3g:green:usb"
 Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
 ===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37737)
+--- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37768)
 +++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
 @@ -173,6 +173,7 @@
  	broadway | \
@@ -64,7 +38,7 @@ Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
  	mpr-a2 | \
 Index: target/linux/ramips/base-files/etc/diag.sh
 ===================================================================
---- target/linux/ramips/base-files/etc/diag.sh	(revision 37737)
+--- target/linux/ramips/base-files/etc/diag.sh	(revision 37768)
 +++ target/linux/ramips/base-files/etc/diag.sh	(working copy)
 @@ -51,6 +51,9 @@
  	rt-n13u)
@@ -76,9 +50,21 @@ Index: target/linux/ramips/base-files/etc/diag.sh
  	all0239-3g|\
  	hw550-3g)
  		status_led="hw550-3g:green:status"
+Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
+===================================================================
+--- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37768)
++++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
+@@ -76,6 +76,7 @@
+ 	fonera20n | \
+ 	rt-n13u | \
+ 	freestation5 | \
++	hlk-rm04 | \
+ 	hw550-3g | \
+ 	mofi3500-3gn | \
+ 	mpr-a1 | \
 Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37737)
+--- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37768)
 +++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
 @@ -44,6 +44,7 @@
  	freestation5 | \
@@ -90,7 +76,7 @@ Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
  	m4 | \
 Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
 ===================================================================
---- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37737)
+--- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37768)
 +++ target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(working copy)
 @@ -26,6 +26,7 @@
  	dir-620-a1 |\
@@ -102,7 +88,7 @@ Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
  	nw718 |\
 Index: target/linux/ramips/base-files/lib/ramips.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/ramips.sh	(revision 37737)
+--- target/linux/ramips/base-files/lib/ramips.sh	(revision 37768)
 +++ target/linux/ramips/base-files/lib/ramips.sh	(working copy)
 @@ -118,6 +118,9 @@
  	*"MoFi Network MOFI3500-3GN")
@@ -116,18 +102,35 @@ Index: target/linux/ramips/base-files/lib/ramips.sh
   		;;
 Index: target/linux/ramips/image/Makefile
 ===================================================================
---- target/linux/ramips/image/Makefile	(revision 37737)
+--- target/linux/ramips/image/Makefile	(revision 37768)
 +++ target/linux/ramips/image/Makefile	(working copy)
-@@ -376,6 +376,8 @@
+@@ -102,8 +102,8 @@
+ # $(2) = lowercase board name
+ # $(3) = dts file
+ ralink_default_fw_size_4M=3866624
+-BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M))
+-BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3))
++BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M),$(4))
++BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
+ 
+ # Build images for default ralink layout for 8MB flash
+ # kernel + roots = 0x7b0000
+@@ -376,6 +376,14 @@
  
  Image/Build/Profile/IP2202=$(call BuildFirmware/Default8M/$(1),$(1),ip2202,IP2202)
  
-+Image/Build/Profile/HLKRM04=$(call BuildFirmware/Default4M/$(1),$(1),hlk-rm04,HLKRM04,Linux Kernel Image)
++BuildFirmware/HLKRM04/squashfs=$(call BuildFirmware/Default4M/squashfs,$(1),$(2),$(3),$(4))
++define BuildFirmware/HLKRM04/initramfs
++	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
++	$(CP) $(call imgname,$(1),$(2))-uImage.bin $(call imgname,$(1),$(2))-factory.bin
++	mkhilinkfw $(call imgname,$(1),$(2))-factory.bin;
++endef
++Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
 +
  Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
  
  Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
-@@ -517,6 +519,7 @@
+@@ -517,6 +525,7 @@
  	$(call Image/Build/Profile/FONERA20N,$(1))
  	$(call Image/Build/Profile/FREESTATION5,$(1))
  #	$(call Image/Build/Profile/HG255D,$(1))
@@ -165,7 +168,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		compatible = "mti,cpu-interrupt-controller";
 +	};
 +
-+	// comment memory node to auto check the SDRAM
++	// comment memory node to make openwrt check SDRAM automatically
 +	memory@0 {
 +		reg = <0x0 0x1000000>;
 +	};
