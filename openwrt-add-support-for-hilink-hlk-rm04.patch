@@ -1,44 +1,6 @@
-Index: target/linux/ramips/rt305x/profiles/hilink.mk
-===================================================================
---- target/linux/ramips/rt305x/profiles/hilink.mk	(revision 0)
-+++ target/linux/ramips/rt305x/profiles/hilink.mk	(working copy)
-@@ -0,0 +1,21 @@
-+#
-+# Copyright (C) 2013 OpenWrt.org
-+#
-+# This is free software, licensed under the GNU General Public License v2.
-+# See /LICENSE for more information.
-+#
-+
-+define Profile/HLKRM04
-+	NAME:=HILINK HLK-RM04
-+	PACKAGES:=\
-+		kmod-usb-core kmod-usb-ohci kmod-usb2 kmod-ledtrig-netdev kmod-ledtrig-timer \
-+		kmod-usb-acm kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-serial kmod-usb-serial-option \
-+		usb-modeswitch usb-modeswitch-data comgt
-+endef
-+
-+define Profile/HLKRM04/Description
-+	Package set for HiLink RM04 Module
-+endef
-+
-+$(eval $(call Profile,HLKRM04))
-+
-Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
-===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37768)
-+++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
-@@ -173,6 +173,7 @@
- 	broadway | \
- 	dir-620-d1 | \
- 	f5d8235-v1 | \
-+	hlk-rm04 | \
- 	ip2202 | \
- 	mpr-a1 | \
- 	mpr-a2 | \
 Index: target/linux/ramips/base-files/etc/diag.sh
 ===================================================================
---- target/linux/ramips/base-files/etc/diag.sh	(revision 37768)
+--- target/linux/ramips/base-files/etc/diag.sh	(revision 37825)
 +++ target/linux/ramips/base-files/etc/diag.sh	(working copy)
 @@ -51,6 +51,9 @@
  	rt-n13u)
@@ -52,9 +14,9 @@ Index: target/linux/ramips/base-files/etc/diag.sh
  		status_led="hw550-3g:green:status"
 Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
 ===================================================================
---- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37768)
+--- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37825)
 +++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
-@@ -76,6 +76,7 @@
+@@ -77,6 +77,7 @@
  	fonera20n | \
  	rt-n13u | \
  	freestation5 | \
@@ -62,21 +24,35 @@ Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
  	hw550-3g | \
  	mofi3500-3gn | \
  	mpr-a1 | \
-Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
+Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
 ===================================================================
---- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37768)
-+++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
-@@ -44,6 +44,7 @@
- 	freestation5 | \
- 	hw550-3g | \
- 	hg255d | \
+--- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 37825)
++++ target/linux/ramips/base-files/etc/uci-defaults/01_leds	(working copy)
+@@ -91,6 +91,9 @@
+ 		set_usb_led "fonera20n:orange:usb"
+ 		set_wifi_led "fonera20n:orange:wifi"
+ 		;;
++	hlk-rm04)
++		set_wifi_led "rt2800pci-phy0::radio"
++		;;
+ 	all0239-3g|\
+ 	hw550-3g)
+ 		set_usb_led "hw550-3g:green:usb"
+Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
+===================================================================
+--- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37825)
++++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
+@@ -174,6 +174,7 @@
+ 	broadway | \
+ 	dir-620-d1 | \
+ 	f5d8235-v1 | \
 +	hlk-rm04 | \
  	ip2202 | \
- 	m3 | \
- 	m4 | \
+ 	mpr-a1 | \
+ 	mpr-a2 | \
 Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
 ===================================================================
---- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37768)
+--- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37825)
 +++ target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(working copy)
 @@ -26,6 +26,7 @@
  	dir-620-a1 |\
@@ -88,9 +64,9 @@ Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
  	nw718 |\
 Index: target/linux/ramips/base-files/lib/ramips.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/ramips.sh	(revision 37768)
+--- target/linux/ramips/base-files/lib/ramips.sh	(revision 37825)
 +++ target/linux/ramips/base-files/lib/ramips.sh	(working copy)
-@@ -118,6 +118,9 @@
+@@ -124,6 +124,9 @@
  	*"MoFi Network MOFI3500-3GN")
  		name="mofi3500-3gn"
  		;;
@@ -100,49 +76,23 @@ Index: target/linux/ramips/base-files/lib/ramips.sh
  	*"HAME MPR-A1")
   		name="mpr-a1"
   		;;
-Index: target/linux/ramips/image/Makefile
+Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
 ===================================================================
---- target/linux/ramips/image/Makefile	(revision 37768)
-+++ target/linux/ramips/image/Makefile	(working copy)
-@@ -102,8 +102,8 @@
- # $(2) = lowercase board name
- # $(3) = dts file
- ralink_default_fw_size_4M=3866624
--BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M))
--BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3))
-+BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M),$(4))
-+BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
- 
- # Build images for default ralink layout for 8MB flash
- # kernel + roots = 0x7b0000
-@@ -376,6 +376,14 @@
- 
- Image/Build/Profile/IP2202=$(call BuildFirmware/Default8M/$(1),$(1),ip2202,IP2202)
- 
-+BuildFirmware/HLKRM04/squashfs=$(call BuildFirmware/Default4M/squashfs,$(1),$(2),$(3),$(4))
-+define BuildFirmware/HLKRM04/initramfs
-+	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
-+	$(CP) $(call imgname,$(1),$(2))-uImage.bin $(call imgname,$(1),$(2))-factory.bin
-+	mkhilinkfw $(call imgname,$(1),$(2))-factory.bin;
-+endef
-+Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
-+
- Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
- 
- Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
-@@ -517,6 +525,7 @@
- 	$(call Image/Build/Profile/FONERA20N,$(1))
- 	$(call Image/Build/Profile/FREESTATION5,$(1))
- #	$(call Image/Build/Profile/HG255D,$(1))
-+	$(call Image/Build/Profile/HLKRM04,$(1))
- 	$(call Image/Build/Profile/HW550-3G,$(1))
- 	$(call Image/Build/Profile/IP2202,$(1))
- 	$(call Image/Build/Profile/M3,$(1))
+--- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37825)
++++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
+@@ -45,6 +45,7 @@
+ 	freestation5 | \
+ 	hw550-3g | \
+ 	hg255d | \
++	hlk-rm04 | \
+ 	ip2202 | \
+ 	m3 | \
+ 	m4 | \
 Index: target/linux/ramips/dts/HLKRM04.dts
 ===================================================================
 --- target/linux/ramips/dts/HLKRM04.dts	(revision 0)
 +++ target/linux/ramips/dts/HLKRM04.dts	(working copy)
-@@ -0,0 +1,331 @@
+@@ -0,0 +1,336 @@
 +/dts-v1/;
 +
 +/ {
@@ -168,7 +118,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		compatible = "mti,cpu-interrupt-controller";
 +	};
 +
-+	// comment memory node to make openwrt check SDRAM automatically
++	// comment memory node to let OpenWrt check SDRAM size automaticly
 +	memory@0 {
 +		reg = <0x0 0x1000000>;
 +	};
@@ -375,7 +325,12 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +
 +				partition@50000 {
 +					label = "firmware";
++					//4M
 +					reg = <0x50000 0x3b0000>;
++					//8M
++					//reg = <0x50000 0x7b0000>;
++					//16M
++					//reg = <0x50000 0xFb0000>;
 +				};
 +			};
 +		};
@@ -474,3 +429,66 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +	};
 +
 +};
+Index: target/linux/ramips/image/Makefile
+===================================================================
+--- target/linux/ramips/image/Makefile	(revision 37825)
++++ target/linux/ramips/image/Makefile	(working copy)
+@@ -102,8 +102,8 @@
+ # $(2) = lowercase board name
+ # $(3) = dts file
+ ralink_default_fw_size_4M=3866624
+-BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M))
+-BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3))
++BuildFirmware/Default4M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralink_default_fw_size_4M),$(4))
++BuildFirmware/Default4M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
+ 
+ # Build images for default ralink layout for 8MB flash
+ # kernel + roots = 0x7b0000
+@@ -378,6 +378,13 @@
+ 
+ Image/Build/Profile/IP2202=$(call BuildFirmware/Default8M/$(1),$(1),ip2202,IP2202)
+ 
++BuildFirmware/HLKRM04/squashfs=$(call BuildFirmware/Default4M/squashfs,$(1),$(2),$(3),$(4))
++define BuildFirmware/HLKRM04/initramfs
++	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
++	mkhilinkfw -e -i$(call imgname,$(1),$(2))-uImage.bin -o $(call imgname,$(1),$(2))-factory.bin;
++endef
++Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
++
+ Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
+ 
+ Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
+@@ -520,6 +527,7 @@
+ 	$(call Image/Build/Profile/FONERA20N,$(1))
+ 	$(call Image/Build/Profile/FREESTATION5,$(1))
+ #	$(call Image/Build/Profile/HG255D,$(1))
++	$(call Image/Build/Profile/HLKRM04,$(1))
+ 	$(call Image/Build/Profile/HW550-3G,$(1))
+ 	$(call Image/Build/Profile/IP2202,$(1))
+ 	$(call Image/Build/Profile/M3,$(1))
+Index: target/linux/ramips/rt305x/profiles/hilink.mk
+===================================================================
+--- target/linux/ramips/rt305x/profiles/hilink.mk	(revision 0)
++++ target/linux/ramips/rt305x/profiles/hilink.mk	(working copy)
+@@ -0,0 +1,21 @@
++#
++# Copyright (C) 2013 OpenWrt.org
++#
++# This is free software, licensed under the GNU General Public License v2.
++# See /LICENSE for more information.
++#
++
++define Profile/HLKRM04
++	NAME:=HILINK HLK-RM04
++	PACKAGES:=\
++		kmod-usb-core kmod-usb-ohci kmod-usb2 kmod-ledtrig-netdev kmod-ledtrig-timer \
++		kmod-usb-acm kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-serial kmod-usb-serial-option \
++		usb-modeswitch usb-modeswitch-data comgt
++endef
++
++define Profile/HLKRM04/Description
++	Package set for HiLink RM04 Module
++endef
++
++$(eval $(call Profile,HLKRM04))
++
