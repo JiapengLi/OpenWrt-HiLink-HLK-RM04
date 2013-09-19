@@ -1,6 +1,6 @@
 Index: target/linux/ramips/base-files/etc/diag.sh
 ===================================================================
---- target/linux/ramips/base-files/etc/diag.sh	(revision 37909)
+--- target/linux/ramips/base-files/etc/diag.sh	(revision 38054)
 +++ target/linux/ramips/base-files/etc/diag.sh	(working copy)
 @@ -51,6 +51,9 @@
  	rt-n13u)
@@ -14,9 +14,9 @@ Index: target/linux/ramips/base-files/etc/diag.sh
  		status_led="hw550-3g:green:status"
 Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
 ===================================================================
---- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 37909)
+--- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 38054)
 +++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
-@@ -77,6 +77,7 @@
+@@ -80,6 +80,7 @@
  	fonera20n | \
  	rt-n13u | \
  	freestation5 | \
@@ -26,9 +26,9 @@ Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
  	mpr-a1 | \
 Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
 ===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 37909)
+--- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 38054)
 +++ target/linux/ramips/base-files/etc/uci-defaults/01_leds	(working copy)
-@@ -91,6 +91,9 @@
+@@ -93,6 +93,9 @@
  		set_usb_led "fonera20n:orange:usb"
  		set_wifi_led "fonera20n:orange:wifi"
  		;;
@@ -40,17 +40,17 @@ Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
  		set_usb_led "hw550-3g:green:usb"
 Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
 ===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 37909)
+--- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 38054)
 +++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
-@@ -79,6 +79,7 @@
- 
- 	dir-610-a1 | \
+@@ -82,6 +82,7 @@
+ 	dir-300-b7 | \
+ 	dir-320-b1 | \
  	dir-615-h1 | \
 +	hlk-rm04 | \
  	mzk-w300nh2)
  		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
  		ucidef_add_switch "switch0" "1" "1"
-@@ -174,6 +175,7 @@
+@@ -177,6 +178,7 @@
  	broadway | \
  	dir-620-d1 | \
  	f5d8235-v1 | \
@@ -60,21 +60,21 @@ Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
  	mpr-a2 | \
 Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
 ===================================================================
---- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 37909)
+--- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 38054)
 +++ target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(working copy)
-@@ -26,6 +26,7 @@
+@@ -27,6 +27,7 @@
  	dir-620-a1 |\
  	esr-9753 |\
  	freestation5 |\
 +	hlk-rm04 | \
  	mpr-a1 | \
  	mpr-a2 | \
- 	nw718 |\
+ 	dir-300-b7 | \
 Index: target/linux/ramips/base-files/lib/ramips.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/ramips.sh	(revision 37909)
+--- target/linux/ramips/base-files/lib/ramips.sh	(revision 38054)
 +++ target/linux/ramips/base-files/lib/ramips.sh	(working copy)
-@@ -124,6 +124,9 @@
+@@ -133,6 +133,9 @@
  	*"MoFi Network MOFI3500-3GN")
  		name="mofi3500-3gn"
  		;;
@@ -86,9 +86,9 @@ Index: target/linux/ramips/base-files/lib/ramips.sh
   		;;
 Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 37909)
+--- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 38054)
 +++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
-@@ -45,6 +45,7 @@
+@@ -48,6 +48,7 @@
  	freestation5 | \
  	hw550-3g | \
  	hg255d | \
@@ -126,7 +126,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		compatible = "mti,cpu-interrupt-controller";
 +	};
 +
-+	// comment memory node make openwrt check SDRAM size automatically
++	// force use 16M SDRAM
 +	memory@0 {
 +		reg = <0x0 0x1000000>;
 +	};
@@ -328,7 +328,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +				factory: partition@40000 {
 +					label = "factory";
 +					reg = <0x40000 0x10000>;
-+					read-only;
++					//read-only;
 +				};
 +
 +				partition@50000 {
@@ -439,7 +439,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +};
 Index: target/linux/ramips/image/Makefile
 ===================================================================
---- target/linux/ramips/image/Makefile	(revision 37909)
+--- target/linux/ramips/image/Makefile	(revision 38054)
 +++ target/linux/ramips/image/Makefile	(working copy)
 @@ -102,8 +102,8 @@
  # $(2) = lowercase board name
@@ -452,7 +452,7 @@ Index: target/linux/ramips/image/Makefile
  
  # Build images for default ralink layout for 8MB flash
  # kernel + roots = 0x7b0000
-@@ -378,6 +378,13 @@
+@@ -380,6 +380,13 @@
  
  Image/Build/Profile/IP2202=$(call BuildFirmware/Default8M/$(1),$(1),ip2202,IP2202)
  
@@ -466,7 +466,7 @@ Index: target/linux/ramips/image/Makefile
  Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
  
  Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
-@@ -520,6 +527,7 @@
+@@ -528,6 +535,7 @@
  	$(call Image/Build/Profile/FONERA20N,$(1))
  	$(call Image/Build/Profile/FREESTATION5,$(1))
  #	$(call Image/Build/Profile/HG255D,$(1))
