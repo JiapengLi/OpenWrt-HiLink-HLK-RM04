@@ -1,6 +1,6 @@
 Index: target/linux/ramips/base-files/etc/diag.sh
 ===================================================================
---- target/linux/ramips/base-files/etc/diag.sh	(revision 38054)
+--- target/linux/ramips/base-files/etc/diag.sh	(revision 38303)
 +++ target/linux/ramips/base-files/etc/diag.sh	(working copy)
 @@ -51,6 +51,9 @@
  	rt-n13u)
@@ -14,7 +14,7 @@ Index: target/linux/ramips/base-files/etc/diag.sh
  		status_led="hw550-3g:green:status"
 Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
 ===================================================================
---- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 38054)
+--- target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(revision 38303)
 +++ target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom	(working copy)
 @@ -80,6 +80,7 @@
  	fonera20n | \
@@ -26,7 +26,7 @@ Index: target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
  	mpr-a1 | \
 Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
 ===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 38054)
+--- target/linux/ramips/base-files/etc/uci-defaults/01_leds	(revision 38303)
 +++ target/linux/ramips/base-files/etc/uci-defaults/01_leds	(working copy)
 @@ -93,6 +93,9 @@
  		set_usb_led "fonera20n:orange:usb"
@@ -40,7 +40,7 @@ Index: target/linux/ramips/base-files/etc/uci-defaults/01_leds
  		set_usb_led "hw550-3g:green:usb"
 Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
 ===================================================================
---- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 38054)
+--- target/linux/ramips/base-files/etc/uci-defaults/02_network	(revision 38303)
 +++ target/linux/ramips/base-files/etc/uci-defaults/02_network	(working copy)
 @@ -82,6 +82,7 @@
  	dir-300-b7 | \
@@ -60,7 +60,7 @@ Index: target/linux/ramips/base-files/etc/uci-defaults/02_network
  	mpr-a2 | \
 Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
 ===================================================================
---- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 38054)
+--- target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(revision 38303)
 +++ target/linux/ramips/base-files/lib/preinit/06_set_iface_mac	(working copy)
 @@ -27,6 +27,7 @@
  	dir-620-a1 |\
@@ -72,7 +72,7 @@ Index: target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
  	dir-300-b7 | \
 Index: target/linux/ramips/base-files/lib/ramips.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/ramips.sh	(revision 38054)
+--- target/linux/ramips/base-files/lib/ramips.sh	(revision 38303)
 +++ target/linux/ramips/base-files/lib/ramips.sh	(working copy)
 @@ -133,6 +133,9 @@
  	*"MoFi Network MOFI3500-3GN")
@@ -86,7 +86,7 @@ Index: target/linux/ramips/base-files/lib/ramips.sh
   		;;
 Index: target/linux/ramips/base-files/lib/upgrade/platform.sh
 ===================================================================
---- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 38054)
+--- target/linux/ramips/base-files/lib/upgrade/platform.sh	(revision 38303)
 +++ target/linux/ramips/base-files/lib/upgrade/platform.sh	(working copy)
 @@ -48,6 +48,7 @@
  	freestation5 | \
@@ -100,7 +100,7 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 ===================================================================
 --- target/linux/ramips/dts/HLKRM04.dts	(revision 0)
 +++ target/linux/ramips/dts/HLKRM04.dts	(working copy)
-@@ -0,0 +1,336 @@
+@@ -0,0 +1,381 @@
 +/dts-v1/;
 +
 +/ {
@@ -142,11 +142,6 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		sysc@0 {
 +			compatible = "ralink,rt5350-sysc", "ralink,rt3050-sysc";
 +			reg = <0x0 0x100>;
-+
-+			ralink,uartmux = "gpio uartf";
-+			ralink,pinmux = "i2c", "spi", "uartlite", "mdio", "sdram", "rgmii";
-+			ralink,gpiomux = "jtag";
-+			ralink,wdtmux = <1>;
 +		};
 +
 +		timer@100 {
@@ -203,6 +198,9 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +			interrupt-parent = <&intc>;
 +			interrupts = <12>;
 +
++			pinctrl-names = "default";
++			pinctrl-0 = <&uartlite_pins>;
++
 +			reg-shift = <2>;
 +		};
 +
@@ -239,8 +237,6 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +			ralink,register-map = [ 00 04 08 0c
 +						20 24 28 2c
 +						30 34 ];
-+
-+			status = "okay";
 +		};
 +
 +		gpio1: gpio@638 {
@@ -290,6 +286,9 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +
 +			#address-cells = <1>;
 +			#size-cells = <0>;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&i2c_pins>;
 +
 +			status = "disabled";
 +		};
@@ -352,6 +351,51 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		};
 +	};
 +
++	pinctrl {
++		compatible = "ralink,rt2880-pinmux";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&state_default>;
++
++		state_default: pinctrl0 {
++			gpio {
++				ralink,group = "jtag", "rgmii", "mdio";
++				ralink,function = "gpio";
++			};
++		};
++
++		spi_pins: spi {
++			spi {
++				ralink,group = "spi";
++				ralink,function = "spi";
++			};
++		};
++		i2c_pins: i2c {
++			i2c {
++				ralink,group = "i2c";
++				ralink,function = "i2c";
++			};
++		};
++		phy_led_pins: phy_led {
++			phy_led {
++				ralink,group = "led";
++				ralink,function = "led";
++			};
++		};
++		uartlite_pins: uartlite {
++			uart {
++				ralink,group = "uartlite";
++				ralink,function = "uartlite";
++			};
++		};
++		uartf_pins: uartf {
++			uartf {
++				ralink,group = "uartf";
++				ralink,function = "gpio uartf";
++			};
++		};
++	};
++
 +	rstctrl: rstctrl {
 +		compatible = "ralink,rt5350-reset", "ralink,rt2880-reset";
 +		#reset-cells = <1>;
@@ -392,6 +436,8 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +		interrupts = <6>;
 +
 +		ralink,eeprom = "soc_wmac.eeprom";
++
++		ralink,led-polarity = <1>;
 +
 +		status = "okay";
 +	};
@@ -435,11 +481,10 @@ Index: target/linux/ramips/dts/HLKRM04.dts
 +			gpios = <&gpio0 0 1>;
 +		};
 +	};
-+
 +};
 Index: target/linux/ramips/image/Makefile
 ===================================================================
---- target/linux/ramips/image/Makefile	(revision 38054)
+--- target/linux/ramips/image/Makefile	(revision 38303)
 +++ target/linux/ramips/image/Makefile	(working copy)
 @@ -102,8 +102,8 @@
  # $(2) = lowercase board name
