@@ -1,4 +1,4 @@
-# Patch for r38025
+# Patch for OpenWrt r38025(HLK-RM04)
 This branch is for OpenWrt trunk r38025.  
 And thers patch only supports 16M flash / 32M SDRAM HLK-RM04 boards.
 
