@@ -30,7 +30,7 @@ This is achieved using the following code snippet:
 
     mkdir openwrt
     cd openwrt
-    svn co svn://svn.openwrt.org/openwrt/trunk@37768 <--@37768 means force to check out Revision 37768
+    svn co svn://svn.openwrt.org/openwrt/trunk@38333 <--@38333 means force to check out Revision 38333
     git clone https://github.com/JiapengLi/OpenWrt-HiLink-HLK-RM04.git
     cd trunk
     patch -p0 <../OpenWrt-HiLink-HLK-RM04/openwrt-add-support-for-hilink-hlk-rm04.patch
