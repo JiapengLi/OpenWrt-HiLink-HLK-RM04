@@ -68,6 +68,18 @@ After all the needed options are selected, exit the menu, save the configuration
 
 After compiling is done without any error, you'll find the image in `bin/ramips/` which is named `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`. 
 
+## Warning
+Before installtion, you need make a choice. The memory configure resistors of the HLK-RM04 is in the wrong position, so we can't use the check automaticly way which openwrt uses. Once the memory node can be used to force set the memmory size, but now it does not work in the latest trunk, maybe OpenWrt Developer changes the name. Two ways are found to solve this, hardware modify or force set SDRAM size in Kernel_menuconfig.
+	
++ Hardware
+Follow <http://wiki.openwrt.org/toh/hilink/hlk-rm04?s#memory.configuration>, change the 2 memory configure resistors to 16M mode.
++ Software
+Run command:
+
+		make kernel_menuconfig
+find **kernel hacking**, press `Enter` and then find **(rootfstype=squashfs,jffs2) Default kernel command string**  
+press `Enter` again and manually set SDRAM value `rootfstype=squashfs,jffs2 mem=16M`
+
 
 ## Installtion
 Jeff Kent make the firmware upload much easier. We can upload the openwrt firmware to the hlk-rm04 directly through the upload firmware WEBUI interface.
