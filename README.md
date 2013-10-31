@@ -7,14 +7,15 @@ it is based on Ralink RT5350 with some GPIOs raised out.
 HLK-RM04 has 4M flash and 16M SDRAM on chip, has 1 USB port, 2 Serial Ports(lite and full), 1 I2C, 2 GPIO(GPIO0, RIN). In different configure, you can get different number of GPIO, for example 8 GPIOs + 1 serial port.
 
 ## Files
-                             
+
 - **openwrt-add-support-for-hilink-hlk-rm04.patch** -- patch to add "HILINK HLK-RM04" to OpenWrt
 - **openwrt-fix-enable-uartf-kernel-panic.patch** -- patch to fix the kernel panic after enable UARTF
 - **openwrt-hlk-rm04-firwmware-tool.patch** -- this patch was writen by Jeff Kent form openwrt forum, this patch make us upload firmware from official webUI upload firmware interface
 - **openwrt-rt5350-add-AP+STA-support.patch** -- this patch was made by jonsmirl who is from OpenWrt mail list. In order to let AP and STA mode work together. With this patch one can enable AP+STA mode, for now user need to enable STA first.
-- **uboot128.img** -- uboot for 16M SDRAM, if you don't modify the HLK-RM04, use this uboot image
-- **uboot256.img** -- uboot for 32M SDRAM, some people may want to expand the Uboot, and these men should use this uboot image
 - **[hlk-rm04-boot-log.md](./hlk-rm04-boot-log.md)** -- some hardware information and openwrt bootlog of HLK-RM04
+- **image/uboot128.img** -- uboot for 16M SDRAM, if you don't modify the HLK-RM04, use this uboot image
+- **image/uboot256.img** -- uboot for 32M SDRAM, some people may want to expand the Uboot, and these men should use this uboot image
+- **image/hlk-rm04-16m-luci-ser2net-usb2serial-r38025.bin** -- image with luci, usb2serial and ser2net. luci runs slowly, sometimes may run out of memory.
 
 ## Patch and Compile Openwrt
 
