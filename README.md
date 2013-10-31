@@ -71,9 +71,9 @@ After compiling is done without any error, you'll find the image in `bin/ramips/
 ## Warning
 Before installtion, you need make a choice. The memory configure resistors of the HLK-RM04 is in the wrong position, so we can't use the check automaticly way which openwrt uses. Once the memory node can be used to force set the memmory size, but now it does not work in the latest trunk, maybe OpenWrt Developer changes the name. Two ways are found to solve this, hardware modify or force set SDRAM size in Kernel_menuconfig.
 	
-+ Hardware
++ Hardware  
 Follow <http://wiki.openwrt.org/toh/hilink/hlk-rm04?s#memory.configuration>, change the 2 memory configure resistors to 16M mode.
-+ Software
++ Software  
 Run command:
 
 		make kernel_menuconfig
