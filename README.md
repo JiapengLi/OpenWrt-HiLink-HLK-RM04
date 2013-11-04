@@ -15,7 +15,7 @@ HLK-RM04 has 4M flash and 16M SDRAM on chip, has 1 USB port, 2 Serial Ports(lite
 - **[hlk-rm04-boot-log.md](./hlk-rm04-boot-log.md)** -- some hardware information and openwrt bootlog of HLK-RM04
 - **image/uboot128.img** -- uboot for 16M SDRAM, if you don't modify the HLK-RM04, use this uboot image
 - **image/uboot256.img** -- uboot for 32M SDRAM, some people may want to expand the Uboot, and these men should use this uboot image
-- **image/hlk-rm04-16m-luci-ser2net-usb2serial-r38025.bin** -- image with luci, usb2serial and ser2net. luci runs slowly, sometimes may run out of memory.
+- **image/hlk-rm04-16m-luci-ser2net-usb2serial-r38025.bin** -- image with luci, usb2serial and ser2net. luci runs slowly, sometimes would also run out of memory.
 
 ## Patch and Compile Openwrt
 
@@ -79,7 +79,10 @@ Run command:
 
 		make kernel_menuconfig
 find **kernel hacking**, press `Enter` and then find **(rootfstype=squashfs,jffs2) Default kernel command string**  
-press `Enter` again and manually set SDRAM value `rootfstype=squashfs,jffs2 mem=16M`
+press `Enter` again and manually set SDRAM value `rootfstype=squashfs,jffs2 mem=16M`  
+At last, recompile the OpenWrt:
+
+		make
 
 
 ## Installtion
