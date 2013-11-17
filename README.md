@@ -70,7 +70,7 @@ After all the needed options are selected, exit the menu, save the configuration
 After compiling is done without any error, you'll find the image in `bin/ramips/` which is named `openwrt-ramips-rt305x-hlk-rm04-squashfs-sysupgrade.bin`. 
 
 ## Warning
-Before installtion, you need make a choice. The memory configure resistors of the HLK-RM04 is in the wrong position, so we can't use the check automaticly way which openwrt uses. Once the memory node can be used to force set the memmory size, but now it does not work in the latest trunk, maybe OpenWrt Developer changes the name. Two ways are found to solve this, hardware modify or force set SDRAM size in Kernel_menuconfig.
+Before installation, you need to make a choice. The memory configure resistors of the HLK-RM04 is in the wrong position, so we can't use it to automatically configure OpenWRT. Once the memory node can be used to force set the memmory size, but now it does not work in the latest trunk, maybe OpenWrt Developer changed the name. Two ways are found to solve this, hardware modification or force setting of the SDRAM size in Kernel\_menuconfig.
 	
 + Hardware  
 Follow <http://wiki.openwrt.org/toh/hilink/hlk-rm04?s#memory.configuration>, change the 2 memory configure resistors to 16M mode.
@@ -86,7 +86,7 @@ At last, recompile the OpenWrt:
 
 
 ## Installtion
-Jeff Kent made the firmware upload much easier. We can upload the openwrt firmware to the hlk-rm04 directly through the upload firmware WEBUI interface.
+Jeff Kent made the firmware upload much easier. We can upload the OpenWRT firmware to the HLK-RM04 directly through the upload firmware WEBUI interface.
 ### First Time
 Make sure you've gotton the `openwrt-ramips-rt305x-hlk-rm04-initramfs-factory.bin`, be careful with this.  It may brick your hlk-rm04 module, so you may need save your hlk-rm04 firmware first.
 
@@ -99,7 +99,7 @@ Make sure you've gotton the `openwrt-ramips-rt305x-hlk-rm04-initramfs-factory.bi
 After install openwrt first time, you can use openwrt sysupgrade command to upgrade hlk-rm04. [See wiki](http://wiki.openwrt.org/doc/howto/generic.sysupgrade)
 
 ## Installtion(This method is out of date)
-So far, i don't make WEBUI upgrade firmware work for flash openwrt image. This installtion need two steps:
+So far, I don't make WEBUI upgrade firmware work for flash openwrt image. This installtion need two steps:
 
 - replace the HiLink official uboot 
 - use the new uboot to flash Openwrt image
