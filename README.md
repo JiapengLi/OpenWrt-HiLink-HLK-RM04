@@ -160,3 +160,7 @@ This patch is made with the help of many guys, Jeff who find the the extra at co
 
 [Install tftp]: http://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/
 [ticket]: https://dev.openwrt.org/ticket/13590
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/JiapengLi/openwrt-hilink-hlk-rm04/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
