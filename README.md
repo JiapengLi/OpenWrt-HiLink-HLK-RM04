@@ -1,3 +1,7 @@
+# Now HLK-RM04 is supported by OpenWrt (r39237), please check the latest trunk to compile.
+
+---
+
 # OpenWrt-HiLink-HLK-RM04
 Openwrt patch and installation guide for HiLink HLK-RM04
 
